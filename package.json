@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "version": "1.5.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node api.js && node --watch --env-file-if-exists=.env src/server.js",
+    "start": "node api.js && node --env-file-if-exists=.env src/server.js",
+    "test": "node --test test/*.test.js",
+    "admin:create": "node --env-file-if-exists=.env src/bootstrap.js",
+    "migrate:pkr": "node --env-file-if-exists=.env src/migrate-pkr.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongodb": "^6.20.0",
+    "cors": "^2.8.5",
+    "helmet": "^8.1.0",
+    "express-rate-limit": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.4",
+    "mongodb-memory-server": "^10.3.0"
+  }
+}
