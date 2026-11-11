@@ -1,0 +1,12 @@
+import {MongoClient} from 'mongodb';
+import {createApp} from './app.js';
+import {MongoStore} from './store.js';
+import express from 'express';
+import path from 'node:path';
+const client=new MongoClient(process.env.MONGODB_URI||'mongodb://localhost:27017',{serverSelectionTimeoutMS:10000});
+await client.connect();const store=new MongoStore(client.db(process.env.MONGODB_DB||'multi_khata'));await store.init();
+const app=createApp({store,secret:process.env.JWT_SECRET,driveConfig:{clientId:process.env.GOOGLE_CLIENT_ID,clientSecret:process.env.GOOGLE_CLIENT_SECRET,redirectUri:process.env.GOOGLE_REDIRECT_URI,tokenKey:process.env.DRIVE_TOKEN_KEY},origins:(process.env.CORS_ORIGINS||'http://localhost:5173').split(',')});
+const frontend=path.resolve(import.meta.dirname,'../../frontend/dist');
+app.use(express.static(frontend));app.get('/{*splat}',(_req,res)=>res.sendFile(path.join(frontend,'index.html')));
+const server=app.listen(process.env.PORT||4000,()=>console.log('Multi Khata server ready'));
+async function stop(){server.close();await client.close();process.exit(0);}process.on('SIGTERM',stop);process.on('SIGINT',stop);
